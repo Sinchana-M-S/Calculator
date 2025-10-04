@@ -1,1 +1,1 @@
-<h1>Calculator</h1>
+<h2>Calculator</h2>
