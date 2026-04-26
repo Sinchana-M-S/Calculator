@@ -9,9 +9,12 @@ pipeline {
         }
         stage('Test') {
             steps {
-                bat 'echo Testing...'
+                echo 'Running real tests...'
+                // This command will crash because the file has a bug
+                bat 'node test_calc.js' 
             }
         }
+
     }
 
     post {
