@@ -2,29 +2,26 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                bat 'echo Building...' // Using 'bat' for Windows
+                bat 'echo Building the new project...'
+                // Add your real build/test commands here. 
+                // E.g., bat 'npm install' or bat 'python test.py'
+                
+                // To intentionally create a failure for Trace to catch, uncomment the next line:
+                // bat 'exit 1'
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Running real tests...'
-                // This command will crash because the file has a bug
-                bat 'node test_calc.js' 
-            }
-        }
-
     }
 
     post {
         always {
             script {
-                // This is the Windows-friendly way to send logs to Trace
+                // This sends the logs to your Trace Backend
                 bat """
                 curl -X POST http://localhost:8000/logs/jenkins ^
                 -H "Content-Type: application/json" ^
-                -d "{\\"job_name\\": \\"${env.JOB_NAME}\\", \\"build_number\\": ${env.BUILD_NUMBER}, \\"status\\": \\"${currentBuild.currentResult}\\", \\"log\\": \\"Build completed with status ${currentBuild.currentResult}\\"}"
+                -d "{\\"job_name\\": \\"${env.JOB_NAME}\\", \\"build_number\\": ${env.BUILD_NUMBER}, \\"status\\": \\"${currentBuild.currentResult}\\", \\"log\\": \\"Build finished with status ${currentBuild.currentResult}\\"}"
                 """
             }
         }
